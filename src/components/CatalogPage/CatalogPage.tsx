@@ -53,7 +53,7 @@ const CatalogPage: React.FC = () => {
       setLoading(false);
     }, 1000);
   }, []);
-  const handleFilterChange = (filterType, value, isChecked) => {
+  const handleFilterChange = (filterType: keyof Filters, value: string, isChecked: boolean) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [filterType]: isChecked
