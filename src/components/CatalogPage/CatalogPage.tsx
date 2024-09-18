@@ -18,6 +18,7 @@ export interface Product {
   color: string;
   discount: number;
   likes: number;
+  stars: number;
 }
 // Define types for Filters
 type Filters = {
@@ -25,8 +26,9 @@ type Filters = {
   category: string[];
   brand: string[];
   color: string[];
-  star: Number[];
+  stars: Number[];
   likes: Number[];
+
   image: string[];
 };
 const CatalogPage: React.FC = () => {
@@ -40,7 +42,7 @@ const CatalogPage: React.FC = () => {
     category: [],
     brand: [],
     color: [],
-    star: [],
+    stars: [],
     likes: [],
     image: [],
   });
@@ -53,7 +55,11 @@ const CatalogPage: React.FC = () => {
       setLoading(false);
     }, 1000);
   }, []);
-  const handleFilterChange = (filterType: keyof Filters, value: string, isChecked: boolean) => {
+  const handleFilterChange = (
+    filterType: keyof Filters,
+    value: string,
+    isChecked: boolean
+  ) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [filterType]: isChecked
@@ -77,7 +83,7 @@ const CatalogPage: React.FC = () => {
     .sort((a, b) => {
       switch (sortBy) {
         case "popularity":
-          return b.likes - a.likes;
+          return b.stars - a.stars;
         case "price_low_to_high":
           return a.price - b.price;
         case "price_high_to_low":
@@ -186,29 +192,53 @@ const CatalogPage: React.FC = () => {
             <>
               <div className="grid grid-cols-3 gap-4">
                 {paginatedProducts.map((product) => (
-                  <div className="product-card bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="relative">
                     <img
                       src={product.image}
                       alt={product.name}
                       className="w-full h-48 object-cover"
                     />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-semibold mb-2">
-                          {product.name}
-                        </h3>
-                        <p className="text-gray-700 mb-1">{product.brand}</p>
+                    {/* Rating and Likes Section */}
+                    <div className="absolute bottom-2 left-2 bg-white bg-opacity-75 p-1.5 rounded-lg flex items-center space-x-4">
+                      {/* Rating */}
+                      <div className="flex items-center space-x-1 text-yellow-500">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          className="w-4 h-4"
+                        >
+                          <path d="M12 2l2.09 6.26H20l-4.81 3.49L17.09 18 12 14.67 6.91 18l1.72-6.25L4 8.26h5.91L12 2z" />
+                        </svg>
+                        <p className="text-sm font-medium text-gray-700">{product.stars}</p>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <p className="text-gray-900 font-medium mb-2">
-                          ₹{product.price}
-                        </p>
-                        <p className="text-red-500 font-medium">
-                          {product.discount}% off
-                        </p>{" "}
+                      {/* Likes */}
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          className="w-4 h-4"
+                        >
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                        <p className="text-sm font-medium text-gray-700">{product.likes}</p>
                       </div>
                     </div>
                   </div>
+                  <div className="p-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                      <p className="text-gray-700 mb-1">{product.brand}</p>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <p className="text-gray-900 font-medium mb-2">₹{product.price}</p>
+                      <p className="text-red-500 font-medium">{product.discount}% off</p>
+                    </div>
+                  </div>
+                </div>
+                
                 ))}
               </div>
               <div className="mt-4 flex justify-center">
